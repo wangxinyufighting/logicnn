@@ -11,6 +11,14 @@ import time
 import os
 import math
 
+from fol import FOL_But
+from logicnn_classes import LeNetConvPoolLayer, MLPDropout, LogicNN
+
+theano.config.floatX = 'float32'
+# theano.config.device = 'cpu'
+theano.config.THEANO_FLAGS = 'FAST_RUN'
+theano.config.mdoe = 'FAST_RUN'
+
 warnings.filterwarnings("ignore")   
 
 def Iden(x):
@@ -21,18 +29,18 @@ def train_conv_net(datasets,
                    U,
                    word_idx_map,
                    img_w=300, 
-                   filter_hs=[3,4,5],
-                   hidden_units=[100,2], 
+                   filter_hs=[3, 4, 5],
+                   hidden_units=[100, 2],
                    dropout_rate=[0.5],
                    shuffle_batch=True,
                    n_epochs=11, 
                    batch_size=50, 
-                   lr_decay = 0.95,
+                   lr_decay=0.95,
                    conv_non_linear="relu",
                    activations=[Iden],
                    sqr_norm_lim=9,
                    non_static=True,
-                   pi_params=[1.,0],
+                   pi_params=[1., 0],
                    C=1.0,
                    patience=20): 
     """
@@ -60,7 +68,9 @@ def train_conv_net(datasets,
                   ("dropout", dropout_rate), ("batch_size",batch_size),("non_static", non_static),
                     ("learn_decay",lr_decay), ("conv_non_linear", conv_non_linear), ("non_static", non_static),
                     ("sqr_norm_lim",sqr_norm_lim),("shuffle_batch",shuffle_batch),("pi_params",pi_params),("C",C)]
-    print parameters 
+
+    for parameter in parameters:
+        print parameter
     
     #define model architecture
     index = T.lscalar()
@@ -264,6 +274,7 @@ def train_conv_net(datasets,
     cost_epoch = 0    
     stop_count = 0
     while (epoch < n_epochs):
+        print 'epoch %i' % epoch
         start_time = time.time()
         epoch = epoch + 1
         # train
@@ -473,9 +484,9 @@ if __name__=="__main__":
     fea = cPickle.load(open("%s/stsa.binary.p.fea.p"%path,"rb"))
     print "features loaded!"
 
-    mode= sys.argv[1]
-    word_vectors = sys.argv[2] 
-    if mode=="-nonstatic":
+    mode = "-nonstatic"
+    word_vectors = "-word2vec" 
+    if mode == "-nonstatic":
         print "model architecture: CNN-non-static"
         non_static=True
     elif mode=="-static":
