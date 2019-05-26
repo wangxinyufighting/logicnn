@@ -485,7 +485,7 @@ if __name__=="__main__":
     print "features loaded!"
 
     mode = "-nonstatic"
-    word_vectors = "-word2vec" 
+    word_vectors = "-word2vec"
     if mode == "-nonstatic":
         print "model architecture: CNN-non-static"
         non_static=True
